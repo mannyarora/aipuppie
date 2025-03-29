@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -13,6 +12,7 @@ import { useToast } from "@/components/ui/use-toast";
 export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
   const { isAuthenticated, login } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -25,21 +25,21 @@ export default function LoginPage() {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setIsLoggingIn(true);
     
     try {
       const success = await login(password);
       if (success) {
         toast({
           title: "Login successful",
-          description: "Welcome back!"
+          description: "You have been logged in successfully.",
         });
-        navigate("/");
+        navigate("/home");
       }
     } catch (error) {
       console.error("Login error:", error);
     } finally {
-      setLoading(false);
+      setIsLoggingIn(false);
     }
   };
 
@@ -71,7 +71,7 @@ export default function LoginPage() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button type="submit" className="w-full" disabled={loading}>
+              <Button type="submit" className="w-full" disabled={loading || isLoggingIn}>
                 {loading ? "Logging in..." : "Login"}
               </Button>
             </CardFooter>

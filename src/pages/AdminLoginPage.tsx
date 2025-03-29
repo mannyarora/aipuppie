@@ -1,83 +1,74 @@
-
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { Label } from "@/components/ui/label";
+import { Header } from "@/components/Header";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Logo } from "@/components/Logo";
-import { Header } from "@/components/Header";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
-export default function AdminLoginPage() {
+function AdminLoginPage() {
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { isAdmin, adminLogin } = useAuth();
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const { adminLogin, isAuthenticated, isAdmin } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
   useEffect(() => {
-    if (isAdmin) {
+    if (isAuthenticated && isAdmin) {
       navigate("/admin");
     }
-  }, [isAdmin, navigate]);
+  }, [isAuthenticated, isAdmin, navigate]);
 
-  const handleAdminLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setIsLoggingIn(true);
     
-    try {
-      const success = await adminLogin(password);
-      if (success) {
-        toast({
-          title: "Login successful",
-          description: "Welcome back, admin!"
-        });
-        navigate("/admin");
-      }
-    } catch (error) {
-      console.error("Login error:", error);
-    } finally {
-      setLoading(false);
+    const success = await adminLogin(password);
+    
+    if (success) {
+      toast({
+        title: "Admin login successful",
+        description: "You have been logged in as admin successfully.",
+      });
+      navigate("/admin"); // Keep redirecting to admin page
     }
+    
+    setIsLoggingIn(false);
   };
 
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-grow flex items-center justify-center p-4">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <Logo className="mx-auto mb-6" />
-            <CardTitle className="text-3xl font-bold">Admin Login</CardTitle>
-            <CardDescription>
-              Enter your admin password to access the tools management panel
-            </CardDescription>
-          </CardHeader>
-          <form onSubmit={handleAdminLogin}>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter your admin password"
-                  required
-                />
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Logging in..." : "Login"}
-              </Button>
-            </CardFooter>
+      <main className="flex-grow container mx-auto px-4 py-8 flex items-center justify-center">
+        <div className="w-full max-w-md">
+          <h1 className="text-3xl font-bold text-center mb-6">Admin Login</h1>
+          
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+            <Input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              disabled={isLoggingIn}
+            />
+            
+            <Button disabled={isLoggingIn}>
+              {isLoggingIn ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Logging in...
+                </div>
+              ) : (
+                "Login"
+              )}
+            </Button>
           </form>
-        </Card>
+        </div>
       </main>
     </div>
   );
 }
+
+export default AdminLoginPage;

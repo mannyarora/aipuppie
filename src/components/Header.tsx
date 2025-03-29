@@ -4,7 +4,7 @@ import { Logo } from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { User, UserCog } from "lucide-react";
+import { User, UserCog, Home } from "lucide-react";
 
 export function Header() {
   const { isAuthenticated, logout, isAdmin, adminLogout } = useAuth();
@@ -18,19 +18,35 @@ export function Header() {
         
         <div className="flex items-center gap-4">
           {isAdmin ? (
-            <Button 
-              variant="outline" 
-              onClick={() => adminLogout()}
-            >
-              Admin Logout
-            </Button>
+            <>
+              <Link to="/admin">
+                <Button variant="ghost" className="flex items-center gap-2">
+                  <Home className="h-4 w-4" />
+                  Dashboard
+                </Button>
+              </Link>
+              <Button 
+                variant="outline" 
+                onClick={() => adminLogout()}
+              >
+                Admin Logout
+              </Button>
+            </>
           ) : isAuthenticated ? (
-            <Button 
-              variant="outline" 
-              onClick={() => logout()}
-            >
-              Logout
-            </Button>
+            <>
+              <Link to="/home">
+                <Button variant="ghost" className="flex items-center gap-2">
+                  <Home className="h-4 w-4" />
+                  Tools
+                </Button>
+              </Link>
+              <Button 
+                variant="outline" 
+                onClick={() => logout()}
+              >
+                Logout
+              </Button>
+            </>
           ) : (
             <div className="flex items-center gap-2">
               <Link to="/login">

@@ -3,6 +3,7 @@ import { createContext, useContext, useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/components/ui/use-toast";
 import { Session, User } from "@supabase/supabase-js";
+import { useNavigate } from "react-router-dom";
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -103,6 +104,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = async () => {
     try {
       await supabase.auth.signOut();
+      window.location.href = "/"; // Redirect to landing page after logout
       // Auth state change listener will update state
     } catch (error: any) {
       toast({
@@ -145,6 +147,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const adminLogout = async () => {
     try {
       await supabase.auth.signOut();
+      window.location.href = "/"; // Redirect to landing page after logout
       // Auth state change listener will update state
     } catch (error: any) {
       toast({
