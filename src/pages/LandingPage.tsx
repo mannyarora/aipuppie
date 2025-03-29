@@ -17,7 +17,7 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link to="/login">
                 <Button size="lg" className="w-full sm:w-auto">
-                  Get Started <ArrowRight className="ml-2 h-4 w-4" />
+                  Explore Tools <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
               <Link to="/admin-login">
@@ -74,7 +74,7 @@ export default function LandingPage() {
             </p>
             <Link to="/login">
               <Button size="lg">
-                Get Started Now
+                Explore Tools Now
               </Button>
             </Link>
           </div>
