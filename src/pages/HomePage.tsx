@@ -5,21 +5,18 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTools } from "@/contexts/ToolsContext";
 import { Header } from "@/components/Header";
 import { ToolCard } from "@/components/ToolCard";
-import { PasswordDialog } from "@/components/PasswordDialog";
-import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 
 export default function HomePage() {
-  const [showPasswordDialog, setShowPasswordDialog] = useState(false);
-  const { isAuthenticated, login } = useAuth();
+  const { isAuthenticated } = useAuth();
   const { tools, isLoading } = useTools();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isAuthenticated && tools.length > 0) {
-      setShowPasswordDialog(true);
+    if (!isAuthenticated) {
+      navigate("/login");
     }
-  }, [isAuthenticated, tools.length]);
+  }, [isAuthenticated, navigate]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -33,7 +30,7 @@ export default function HomePage() {
           </p>
         </section>
         
-        {isAuthenticated ? (
+        {isAuthenticated && (
           <section>
             <h2 className="text-2xl font-semibold mb-6">Our AI Tools</h2>
             
@@ -48,19 +45,9 @@ export default function HomePage() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <p className="text-muted-foreground mb-4">No tools have been added yet.</p>
-                <Button onClick={() => navigate("/admin")}>Go to Admin Panel</Button>
+                <p className="text-muted-foreground">No tools have been added yet.</p>
               </div>
             )}
-          </section>
-        ) : (
-          <section className="text-center py-12">
-            <p className="text-muted-foreground mb-4">
-              Please log in to access our collection of AI tools.
-            </p>
-            <Button onClick={() => setShowPasswordDialog(true)}>
-              Log In
-            </Button>
           </section>
         )}
       </main>
@@ -70,14 +57,6 @@ export default function HomePage() {
           &copy; {new Date().getFullYear()} AiPuppie.com. All rights reserved.
         </div>
       </footer>
-      
-      <PasswordDialog 
-        isOpen={showPasswordDialog} 
-        onClose={() => setShowPasswordDialog(false)} 
-        onSubmit={login}
-        title="Password Required" 
-        description="Enter the password to access AI tools." 
-      />
     </div>
   );
 }
