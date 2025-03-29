@@ -1,42 +1,83 @@
 
-import { Link } from "react-router-dom";
-import { Logo } from "@/components/Logo";
+import { useState } from "react";
+import { useTools } from "@/contexts/ToolsContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { Header } from "@/components/Header";
+import { ToolCard } from "@/components/ToolCard";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Search, ArrowUpDown } from "lucide-react";
+import { Loader2 } from "lucide-react";
 
 export default function HomePage() {
+  const { tools, isLoading } = useTools();
+  const { isAuthenticated } = useAuth();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+
+  const filteredTools = tools
+    .filter(tool => 
+      tool.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      tool.description.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      const nameA = a.name.toLowerCase();
+      const nameB = b.name.toLowerCase();
+      if (sortDirection === "asc") {
+        return nameA.localeCompare(nameB);
+      } else {
+        return nameB.localeCompare(nameA);
+      }
+    });
+
+  const toggleSortDirection = () => {
+    setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-grow container mx-auto px-4 py-16 flex flex-col items-center justify-center">
-        <div className="mb-8">
-          <Logo size="lg" />
+      <main className="flex-grow container mx-auto px-4 py-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+          <h1 className="text-3xl font-bold">Available Tools</h1>
+          
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <div className="relative w-full sm:w-64">
+              <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Search tools..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-8"
+              />
+            </div>
+            <Button variant="outline" size="icon" onClick={toggleSortDirection} title={`Sort ${sortDirection === "asc" ? "Descending" : "Ascending"}`}>
+              <ArrowUpDown className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
         
-        <h1 className="text-4xl md:text-5xl font-bold mb-6 text-primary">AiPuppie.com</h1>
-        
-        <p className="text-lg md:text-xl max-w-3xl mx-auto mb-10 text-center text-muted-foreground">
-          Discover a world of powerful AI tools designed to supercharge your productivity, 
-          creativity, and problem-solving abilities. From content generation to data analysis, 
-          AiPuppie provides cutting-edge solutions to transform your workflow.
-        </p>
-        
-        <Link to="/login">
-          <Button 
-            className="bg-primary text-primary-foreground px-8 py-3 rounded-md text-lg hover:bg-primary/90 transition-colors"
-          >
-            Explore Tools
-          </Button>
-        </Link>
+        {isLoading ? (
+          <div className="flex justify-center items-center py-16">
+            <Loader2 className="h-10 w-10 animate-spin text-primary" />
+            <span className="ml-2 text-lg">Loading...</span>
+          </div>
+        ) : filteredTools.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            {searchTerm ? "No tools match your search" : "No tools available"}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredTools.map((tool) => (
+              <ToolCard 
+                key={tool.id} 
+                tool={tool} 
+              />
+            ))}
+          </div>
+        )}
       </main>
-      
-      <footer className="border-t py-6">
-        <div className="container mx-auto px-4 text-center">
-          <Logo size="sm" className="mx-auto mb-2" />
-          <p className="text-muted-foreground">&copy; {new Date().getFullYear()} AiPuppie.com. All rights reserved.</p>
-        </div>
-      </footer>
     </div>
   );
 }

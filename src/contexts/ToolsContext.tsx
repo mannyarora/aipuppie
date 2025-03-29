@@ -40,7 +40,7 @@ export function ToolsProvider({ children }: { children: React.ReactNode }) {
         throw error;
       }
       
-      setTools(data);
+      setTools(data || []);
     } catch (err: any) {
       console.error("Error fetching tools:", err);
       setError(err.message || "Failed to fetch tools");
@@ -70,6 +70,9 @@ export function ToolsProvider({ children }: { children: React.ReactNode }) {
       if (data && data.length > 0) {
         setTools((prev) => [...prev, data[0] as Tool]);
       }
+      
+      // Refresh the tools list to ensure we have the latest data
+      await fetchTools();
     } catch (err: any) {
       console.error("Error adding tool:", err);
       toast({
@@ -102,6 +105,9 @@ export function ToolsProvider({ children }: { children: React.ReactNode }) {
           prev.map((tool) => (tool.id === id ? { ...tool, ...updatedTool } : tool))
         );
       }
+      
+      // Refresh the tools list to ensure we have the latest data
+      await fetchTools();
     } catch (err: any) {
       console.error("Error updating tool:", err);
       toast({
