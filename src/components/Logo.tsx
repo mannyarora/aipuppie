@@ -13,11 +13,11 @@ export function Logo({ className }: LogoProps) {
     <div className={cn("flex items-center", className)}>
       <img 
         src={theme === "light" 
-          ? "/lovable-uploads/ff5a2260-597b-49a9-b21f-8adcb577fda7.png"
-          : "/lovable-uploads/35e0fb42-3216-451e-bebf-768d5a3a5cf8.png"
+          ? "/lovable-uploads/523d0ee2-0ae2-4011-b348-1ac2cc0d7d32.png"
+          : "/lovable-uploads/7df51b85-56ed-413e-a2d7-da643998d4f6.png"
         } 
         alt="AiPuppie Logo" 
-        className="h-10 w-auto" 
+        className="h-full w-auto object-contain" 
       />
     </div>
   );

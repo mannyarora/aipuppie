@@ -8,8 +8,10 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-grow container mx-auto px-4 py-16 text-center">
-        <Logo className="mx-auto mb-8 w-48 h-48" />
+      <main className="flex-grow container mx-auto px-4 py-16 text-center flex flex-col items-center justify-center">
+        <div className="w-48 h-48 mb-8 flex items-center justify-center">
+          <Logo className="max-w-full max-h-full" />
+        </div>
         
         <h1 className="text-5xl font-bold mb-6 text-primary">AiPuppie.com</h1>
         
