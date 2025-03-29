@@ -1,55 +1,32 @@
 
-import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { useTools } from "@/contexts/ToolsContext";
+import { Link } from "react-router-dom";
+import { Logo } from "@/components/Logo";
 import { Header } from "@/components/Header";
-import { ToolCard } from "@/components/ToolCard";
-import { Loader2 } from "lucide-react";
 
 export default function HomePage() {
-  const { isAuthenticated } = useAuth();
-  const { tools, isLoading } = useTools();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      navigate("/login");
-    }
-  }, [isAuthenticated, navigate]);
-
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       
-      <main className="flex-grow container mx-auto px-4 py-8">
-        <section className="mb-12 text-center">
-          <h1 className="text-4xl font-bold mb-4">AiPuppie.com</h1>
-          <p className="text-xl max-w-3xl mx-auto">
-            Discover our collection of powerful AI tools designed to enhance your productivity and creative workflows.
-          </p>
-        </section>
+      <main className="flex-grow container mx-auto px-4 py-16 text-center">
+        <Logo className="mx-auto mb-8 w-48 h-48" />
         
-        {isAuthenticated && (
-          <section>
-            <h2 className="text-2xl font-semibold mb-6">Our AI Tools</h2>
-            
-            {isLoading ? (
-              <div className="flex justify-center items-center py-16">
-                <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                <span className="ml-2 text-lg">Loading tools...</span>
-              </div>
-            ) : tools.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {tools.map(tool => <ToolCard key={tool.id} tool={tool} />)}
-              </div>
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground">No tools have been added yet.</p>
-              </div>
-            )}
-          </section>
-        )}
+        <h1 className="text-5xl font-bold mb-6 text-primary">AiPuppie.com</h1>
+        
+        <p className="text-xl max-w-3xl mx-auto mb-10 text-muted-foreground">
+          Discover a world of powerful AI tools designed to supercharge your productivity, 
+          creativity, and problem-solving abilities. From content generation to data analysis, 
+          AiPuppie provides cutting-edge solutions to transform your workflow.
+        </p>
+        
+        <div className="flex justify-center space-x-4">
+          <Link 
+            to="/login" 
+            className="bg-primary text-primary-foreground px-6 py-3 rounded-md text-lg hover:bg-primary/90 transition-colors"
+          >
+            Explore Tools
+          </Link>
+        </div>
       </main>
       
       <footer className="border-t py-6">
