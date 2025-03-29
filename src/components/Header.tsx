@@ -1,9 +1,9 @@
 
+import { Link } from "react-router-dom";
 import { Logo } from "./Logo";
 import { ThemeToggle } from "./ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { Link } from "react-router-dom";
 import { User, UserCog } from "lucide-react";
 
 export function Header() {
