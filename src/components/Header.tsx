@@ -12,9 +12,8 @@ export function Header() {
   return (
     <header className="border-b">
       <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-2">
-          <Logo size="sm" />
-          <span className="font-bold text-xl">AiPuppie.com</span>
+        <Link to="/" className="flex items-center">
+          <Logo size="sm" showText={true} />
         </Link>
         
         <div className="flex items-center gap-4">

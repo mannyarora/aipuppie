@@ -5,9 +5,10 @@ import { cn } from "@/lib/utils";
 interface LogoProps {
   className?: string;
   size?: "sm" | "md" | "lg";
+  showText?: boolean;
 }
 
-export function Logo({ className, size = "md" }: LogoProps) {
+export function Logo({ className, size = "md", showText = false }: LogoProps) {
   const { theme } = useTheme();
   
   const sizeClasses = {
@@ -17,15 +18,16 @@ export function Logo({ className, size = "md" }: LogoProps) {
   };
   
   return (
-    <div className={cn("flex items-center", className)}>
+    <div className={cn("flex items-center gap-2", className)}>
       <img 
         src={theme === "light" 
-          ? "/lovable-uploads/45e8454a-fa0f-4d0f-b760-e9860ee67429.png"
-          : "/lovable-uploads/6668e75c-065f-4bbd-9cdc-4d08f70cf025.png"
+          ? "/lovable-uploads/deabdf6a-2108-4edb-8bca-8f191442e575.png"
+          : "/lovable-uploads/b371c0ab-02ee-4201-8d9f-679966039bc1.png"
         } 
         alt="AiPuppie Logo" 
         className={cn(sizeClasses[size], "w-auto object-contain")}
       />
+      {showText && <span className="font-bold text-xl">AiPuppie</span>}
     </div>
   );
 }
