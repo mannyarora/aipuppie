@@ -1,7 +1,10 @@
+
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { Logo } from "@/components/Logo";
+
 export default function LandingPage() {
   return <div className="min-h-screen flex flex-col">
       <Header />
@@ -10,6 +13,9 @@ export default function LandingPage() {
         {/* Hero Section */}
         <section className="py-16 md:py-24 bg-gradient-to-b from-background to-secondary/20">
           <div className="container mx-auto px-4 text-center">
+            <div className="flex justify-center mb-8">
+              <Logo size="lg" showText={false} />
+            </div>
             <h1 className="text-4xl md:text-6xl font-bold mb-6">Welcome to AI Puppie</h1>
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
               Discover and manage AI tools that help you work smarter, not harder
@@ -32,7 +38,7 @@ export default function LandingPage() {
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-bold text-center mb-12">Why Choose AI Puppie?</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="bg-card rounded-lg p-6 shadow-sm">
+              <div className="bg-card rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -42,7 +48,7 @@ export default function LandingPage() {
                 <p className="text-muted-foreground">Access a carefully selected collection of the most powerful AI tools for every task.</p>
               </div>
               
-              <div className="bg-card rounded-lg p-6 shadow-sm">
+              <div className="bg-card rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
@@ -52,7 +58,7 @@ export default function LandingPage() {
                 <p className="text-muted-foreground">Find, sort, and filter tools with our intuitive interface designed for productivity.</p>
               </div>
               
-              <div className="bg-card rounded-lg p-6 shadow-sm">
+              <div className="bg-card rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-300">
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
