@@ -17,13 +17,17 @@ export function Header() {
         </Link>
         
         <div className="flex items-center gap-4">
-          {isAuthenticated ? (
+          {isAdmin ? (
             <Button 
               variant="outline" 
-              onClick={() => {
-                logout();
-                if (isAdmin) adminLogout();
-              }}
+              onClick={() => adminLogout()}
+            >
+              Admin Logout
+            </Button>
+          ) : isAuthenticated ? (
+            <Button 
+              variant="outline" 
+              onClick={() => logout()}
             >
               Logout
             </Button>
