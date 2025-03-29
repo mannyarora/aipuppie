@@ -7,7 +7,7 @@ import { Header } from "@/components/Header";
 import { ToolCard } from "@/components/ToolCard";
 import { ToolForm } from "@/components/ToolForm";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Loader2, Plus } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 
 export default function AdminPage() {
@@ -15,7 +15,7 @@ export default function AdminPage() {
   const [editingTool, setEditingTool] = useState<Tool | undefined>(undefined);
   
   const { isAdmin } = useAuth();
-  const { tools, addTool, updateTool, deleteTool } = useTools();
+  const { tools, isLoading, addTool, updateTool, deleteTool } = useTools();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -33,32 +33,40 @@ export default function AdminPage() {
     }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this tool?")) {
-      deleteTool(id);
-      toast({
-        title: "Tool Deleted",
-        description: "The tool has been successfully deleted.",
-      });
+      try {
+        await deleteTool(id);
+        toast({
+          title: "Tool Deleted",
+          description: "The tool has been successfully deleted.",
+        });
+      } catch (error) {
+        // Error is already handled in the context
+      }
     }
   };
 
-  const handleFormSubmit = (data: Omit<Tool, "id">) => {
-    if (editingTool) {
-      updateTool(editingTool.id, data);
-      toast({
-        title: "Tool Updated",
-        description: "The tool has been successfully updated.",
-      });
-    } else {
-      addTool(data);
-      toast({
-        title: "Tool Added",
-        description: "The tool has been successfully added.",
-      });
+  const handleFormSubmit = async (data: Omit<Tool, "id">) => {
+    try {
+      if (editingTool) {
+        await updateTool(editingTool.id, data);
+        toast({
+          title: "Tool Updated",
+          description: "The tool has been successfully updated.",
+        });
+      } else {
+        await addTool(data);
+        toast({
+          title: "Tool Added",
+          description: "The tool has been successfully added.",
+        });
+      }
+      setShowForm(false);
+      setEditingTool(undefined);
+    } catch (error) {
+      // Error is already handled in the context
     }
-    setShowForm(false);
-    setEditingTool(undefined);
   };
 
   const handleCancel = () => {
@@ -78,7 +86,7 @@ export default function AdminPage() {
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold">Admin Panel</h1>
           
-          {!showForm && (
+          {!showForm && !isLoading && (
             <Button onClick={() => setShowForm(true)}>
               <Plus className="mr-2 h-4 w-4" /> Add New Tool
             </Button>
@@ -95,6 +103,11 @@ export default function AdminPage() {
               onSubmit={handleFormSubmit}
               onCancel={handleCancel}
             />
+          </div>
+        ) : isLoading ? (
+          <div className="flex justify-center items-center py-16">
+            <Loader2 className="h-10 w-10 animate-spin text-primary" />
+            <span className="ml-2 text-lg">Loading tools...</span>
           </div>
         ) : (
           <>

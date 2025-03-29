@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
@@ -6,22 +7,22 @@ import { Header } from "@/components/Header";
 import { ToolCard } from "@/components/ToolCard";
 import { PasswordDialog } from "@/components/PasswordDialog";
 import { Button } from "@/components/ui/button";
+import { Loader2 } from "lucide-react";
+
 export default function HomePage() {
   const [showPasswordDialog, setShowPasswordDialog] = useState(false);
-  const {
-    isAuthenticated,
-    login
-  } = useAuth();
-  const {
-    tools
-  } = useTools();
+  const { isAuthenticated, login } = useAuth();
+  const { tools, isLoading } = useTools();
   const navigate = useNavigate();
+
   useEffect(() => {
     if (!isAuthenticated && tools.length > 0) {
       setShowPasswordDialog(true);
     }
   }, [isAuthenticated, tools.length]);
-  return <div className="min-h-screen flex flex-col">
+
+  return (
+    <div className="min-h-screen flex flex-col">
       <Header />
       
       <main className="flex-grow container mx-auto px-4 py-8">
@@ -32,23 +33,36 @@ export default function HomePage() {
           </p>
         </section>
         
-        {isAuthenticated ? <section>
+        {isAuthenticated ? (
+          <section>
             <h2 className="text-2xl font-semibold mb-6">Our AI Tools</h2>
             
-            {tools.length > 0 ? <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {isLoading ? (
+              <div className="flex justify-center items-center py-16">
+                <Loader2 className="h-10 w-10 animate-spin text-primary" />
+                <span className="ml-2 text-lg">Loading tools...</span>
+              </div>
+            ) : tools.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {tools.map(tool => <ToolCard key={tool.id} tool={tool} />)}
-              </div> : <div className="text-center py-12">
+              </div>
+            ) : (
+              <div className="text-center py-12">
                 <p className="text-muted-foreground mb-4">No tools have been added yet.</p>
                 <Button onClick={() => navigate("/admin")}>Go to Admin Panel</Button>
-              </div>}
-          </section> : <section className="text-center py-12">
+              </div>
+            )}
+          </section>
+        ) : (
+          <section className="text-center py-12">
             <p className="text-muted-foreground mb-4">
               Please log in to access our collection of AI tools.
             </p>
             <Button onClick={() => setShowPasswordDialog(true)}>
               Log In
             </Button>
-          </section>}
+          </section>
+        )}
       </main>
       
       <footer className="border-t py-6">
@@ -57,6 +71,13 @@ export default function HomePage() {
         </div>
       </footer>
       
-      <PasswordDialog isOpen={showPasswordDialog} onClose={() => setShowPasswordDialog(false)} onSubmit={login} title="Password Required" description="Enter the password to access AI tools." />
-    </div>;
+      <PasswordDialog 
+        isOpen={showPasswordDialog} 
+        onClose={() => setShowPasswordDialog(false)} 
+        onSubmit={login}
+        title="Password Required" 
+        description="Enter the password to access AI tools." 
+      />
+    </div>
+  );
 }

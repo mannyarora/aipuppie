@@ -1,5 +1,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 export interface Tool {
   id: string;
@@ -10,43 +12,138 @@ export interface Tool {
 
 interface ToolsContextType {
   tools: Tool[];
-  addTool: (tool: Omit<Tool, "id">) => void;
-  updateTool: (id: string, tool: Partial<Tool>) => void;
-  deleteTool: (id: string) => void;
+  isLoading: boolean;
+  error: string | null;
+  addTool: (tool: Omit<Tool, "id">) => Promise<void>;
+  updateTool: (id: string, tool: Partial<Tool>) => Promise<void>;
+  deleteTool: (id: string) => Promise<void>;
 }
 
 const ToolsContext = createContext<ToolsContextType | undefined>(undefined);
 
 export function ToolsProvider({ children }: { children: React.ReactNode }) {
-  const [tools, setTools] = useState<Tool[]>(() => {
-    const savedTools = localStorage.getItem("tools");
-    return savedTools ? JSON.parse(savedTools) : [];
-  });
+  const [tools, setTools] = useState<Tool[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
-    localStorage.setItem("tools", JSON.stringify(tools));
-  }, [tools]);
+    fetchTools();
+  }, []);
 
-  const addTool = (tool: Omit<Tool, "id">) => {
-    const newTool = {
-      ...tool,
-      id: crypto.randomUUID(),
-    };
-    setTools((prev) => [...prev, newTool]);
+  const fetchTools = async () => {
+    try {
+      setIsLoading(true);
+      const { data, error } = await supabase.from("tools").select("*");
+      
+      if (error) {
+        throw error;
+      }
+      
+      setTools(data);
+    } catch (err: any) {
+      console.error("Error fetching tools:", err);
+      setError(err.message || "Failed to fetch tools");
+      toast({
+        variant: "destructive",
+        title: "Error fetching tools",
+        description: err.message || "Failed to fetch tools",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const updateTool = (id: string, updatedTool: Partial<Tool>) => {
-    setTools((prev) =>
-      prev.map((tool) => (tool.id === id ? { ...tool, ...updatedTool } : tool))
-    );
+  const addTool = async (tool: Omit<Tool, "id">) => {
+    try {
+      setIsLoading(true);
+      
+      const { data, error } = await supabase
+        .from("tools")
+        .insert([tool])
+        .select();
+      
+      if (error) {
+        throw error;
+      }
+      
+      if (data && data.length > 0) {
+        setTools((prev) => [...prev, data[0] as Tool]);
+      }
+    } catch (err: any) {
+      console.error("Error adding tool:", err);
+      toast({
+        variant: "destructive",
+        title: "Error adding tool",
+        description: err.message || "Failed to add tool",
+      });
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const deleteTool = (id: string) => {
-    setTools((prev) => prev.filter((tool) => tool.id !== id));
+  const updateTool = async (id: string, updatedTool: Partial<Tool>) => {
+    try {
+      setIsLoading(true);
+      
+      const { data, error } = await supabase
+        .from("tools")
+        .update(updatedTool)
+        .eq("id", id)
+        .select();
+      
+      if (error) {
+        throw error;
+      }
+      
+      if (data && data.length > 0) {
+        setTools((prev) =>
+          prev.map((tool) => (tool.id === id ? { ...tool, ...updatedTool } : tool))
+        );
+      }
+    } catch (err: any) {
+      console.error("Error updating tool:", err);
+      toast({
+        variant: "destructive",
+        title: "Error updating tool",
+        description: err.message || "Failed to update tool",
+      });
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteTool = async (id: string) => {
+    try {
+      setIsLoading(true);
+      
+      const { error } = await supabase
+        .from("tools")
+        .delete()
+        .eq("id", id);
+      
+      if (error) {
+        throw error;
+      }
+      
+      setTools((prev) => prev.filter((tool) => tool.id !== id));
+    } catch (err: any) {
+      console.error("Error deleting tool:", err);
+      toast({
+        variant: "destructive",
+        title: "Error deleting tool",
+        description: err.message || "Failed to delete tool",
+      });
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <ToolsContext.Provider value={{ tools, addTool, updateTool, deleteTool }}>
+    <ToolsContext.Provider value={{ tools, isLoading, error, addTool, updateTool, deleteTool }}>
       {children}
     </ToolsContext.Provider>
   );
