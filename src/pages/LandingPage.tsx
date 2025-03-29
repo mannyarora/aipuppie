@@ -1,12 +1,9 @@
-
 import { Link } from "react-router-dom";
 import { Header } from "@/components/Header";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-
 export default function LandingPage() {
-  return (
-    <div className="min-h-screen flex flex-col">
+  return <div className="min-h-screen flex flex-col">
       <Header />
       
       <main className="flex-grow">
@@ -24,9 +21,7 @@ export default function LandingPage() {
                 </Button>
               </Link>
               <Link to="/admin-login">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto">
-                  Admin Access
-                </Button>
+                
               </Link>
             </div>
           </div>
@@ -91,6 +86,5 @@ export default function LandingPage() {
           <p className="text-muted-foreground">© {new Date().getFullYear()} AI Puppie. All rights reserved.</p>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 }
